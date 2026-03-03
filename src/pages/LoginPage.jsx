@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import styles from "../styles/LoginPage.module.css";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useAuthStore } from "../stores/useAuthStore";
 
 const loginSchema = z.object({
   email: z.string().min(1, "กรุณากรอกอีเมล").email("อีเมลไม่ถูกต้อง"),
@@ -9,6 +10,8 @@ const loginSchema = z.object({
 });
 
 export default function LoginPage() {
+  const login = useAuthStore((state) => state.login);
+
   const {
     register,
     handleSubmit,
@@ -20,7 +23,13 @@ export default function LoginPage() {
   //   console.log(errors)
 
   const onSubmit = async (data) => {
-    console.log(data);
+    // console.log(data);
+    try {
+      await login(data.email, data.password);
+      alert("Login Success!")
+    } catch {
+      alert("Login Failed!");
+    }
   };
 
   return (
